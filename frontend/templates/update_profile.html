@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Изменение профиля - GainWave</title>
+    <link rel="stylesheet" href="/static/css/account_actions.css">
+</head>
+<body>
+    <div class="page-container">
+        <header class="header">
+            <div class="container">
+                <a href="/catalog" class="logo">
+                    <img src="/static/images/logo.jpg" alt="GainWave" class="logo-img">
+                    <span>GainWave</span>
+                </a>
+                <nav class="nav">
+                    <a href="/catalog" class="nav-link">Каталог</a>
+                    <a href="/cart" class="nav-link">Корзина</a>
+                    <a href="/profile" class="nav-link">Профиль</a>
+                    <form action="/logout" method="POST" class="logout-form">
+                        <button type="submit" class="logout-btn">Выйти</button>
+                    </form>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="container">
+                <div class="account-action-container">
+                    <div class="account-action-card">
+                        <div class="action-header">
+                            <h1 class="page-title">✏️ Изменение профиля</h1>
+                            <p class="page-subtitle">Обновите ваши данные</p>
+                        </div>
+
+                        <!-- Показываем текущие данные -->
+                        <div class="current-data-section">
+                            <h3>Ваши текущие данные:</h3>
+                            <div class="current-data">
+                                <p><strong>Имя:</strong> {{.CurrentName}}</p>
+                                <p><strong>Email:</strong> {{.CurrentEmail}}</p>
+                            </div>
+                        </div>
+
+                        {{if .Message}}
+                        <div class="alert alert-{{if .Success}}success{{else}}error{{end}}">
+                            {{.Message}}
+                        </div>
+                        {{end}}
+
+                        <form action="/update-profile" method="POST" class="account-form">
+                            <div class="form-section">
+                                <h3>Новые данные</h3>
+                                
+                                <div class="form-group">
+                                    <label for="new_name" class="form-label">
+                                        Новое имя
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        id="new_name" 
+                                        name="new_name" 
+                                        class="form-input"
+                                        placeholder="Введите новое имя"
+                                        value="{{.CurrentName}}"
+                                        required
+                                        minlength="2"
+                                    >
+                                    <div class="input-hint">
+                                        Оставьте текущее значение, если не хотите менять
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="new_email" class="form-label">
+                                        Новый email
+                                    </label>
+                                    <input 
+                                        type="email" 
+                                        id="new_email" 
+                                        name="new_email" 
+                                        class="form-input"
+                                        placeholder="Введите новый email"
+                                        value="{{.CurrentEmail}}"
+                                        required
+                                    >
+                                    <div class="input-hint">
+                                        Оставьте текущее значение, если не хотите менять
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h3>Подтверждение изменений</h3>
+                                
+                                <div class="form-group">
+                                    <label for="password" class="form-label">
+                                        Текущий пароль
+                                    </label>
+                                    <input 
+                                        type="password" 
+                                        id="password" 
+                                        name="password" 
+                                        class="form-input"
+                                        placeholder="Введите ваш пароль для подтверждения"
+                                        required
+                                    >
+                                    <div class="input-hint">
+                                        Для безопасности введите ваш текущий пароль
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <a href="/profile" class="btn btn-secondary">
+                                    Отмена
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    Сохранить изменения
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

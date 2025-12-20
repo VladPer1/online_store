@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подтверждение email - GainWave</title>
+    <link rel="stylesheet" href="/static/css/verify-code.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="logo">
+            <img src="/static/images/logo.jpg" alt="GainWave" width="200">
+        </div>
+
+        <!-- Сообщения об ошибках/успехе -->
+        {{if .Message}}
+        <div class="message error">
+            {{.Message}}
+        </div>
+        {{end}}
+
+        <div class="verification-header">
+            <h2>Подтверждение email</h2>
+            <p class="verification-subtitle">
+                Мы отправили код подтверждения на: 
+                <strong>{{.Email}}</strong>
+            </p>
+        </div>
+
+        <!-- Форма ввода кода -->
+        <form class="verification-form" method="POST" action="/verify-code">
+            <!-- Скрытые поля для передачи данных -->
+            <input type="hidden" name="email" value="{{.Email}}">
+            
+            <div class="input-group">
+                <input type="text" id="code" name="code" placeholder=" " required maxlength="5" pattern="[0-9]{5}">
+                <label for="code">Код подтверждения</label>
+            </div>
+
+            <div class="verification-hint">
+                Введите 5-значный код из письма
+            </div>
+
+            <button type="submit" class="auth-btn">Подтвердить</button>
+        </form>
+
+        <div class="verification-footer">
+            <p>Не получили код?</p>
+            <a href="/register" class="footer-link">Попробовать снова</a>
+            <span class="divider">•</span>
+            <a href="/" class="footer-link">Вернуться на главную</a>
+        </div>
+    </div>
+</body>
+</html>

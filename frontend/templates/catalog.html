@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/static/css/header.css">
+    <link rel="stylesheet" href="/static/css/catalog.css">
+    <script src="/static/js/catalog.js" defer></script>
+    
+</head>
+<body>
+     <div class="page-container">
+     <header class="header">
+    <div class="header-container">
+        <div class="header-inner">
+            <a href="/catalog" class="logo">
+                <img src="/static/images/logo.jpg" alt="GainWave" class="logo-img">
+                <span>GainWave</span>
+            </a>
+            <nav class="nav">
+                <a href="/catalog" class="nav-link active">Каталог</a>
+                <a href="/cart" class="nav-link">Корзина</a>
+                <a href="/profile" class="nav-link">Профиль</a>
+                <form action="/logout" method="POST" class="logout-form">
+                    <button type="submit" class="logout-btn">Выйти</button>
+                </form>
+            </nav>
+        </div>
+    </div>
+</header>
+
+    <main class="main">
+        <div class="container">
+            <!-- Фильтры -->
+            <aside class="filters">
+                <h2>Фильтры</h2>
+                
+                <!-- Поиск -->
+                <div class="filter-group">
+                    <label for="search">Поиск</label>
+                    <input type="text" id="search" name="search" value="{{.SearchQuery}}" 
+                           placeholder="Название товара..." class="filter-input">
+                </div>
+
+                <!-- Цена -->
+                <div class="filter-group">
+                    <label>Цена (BYN)</label>
+                    <div class="price-inputs">
+                        <input type="number" name="price_min" value="{{.PriceMin}}" 
+                               placeholder="от" class="price-input" min="0">
+                        <input type="number" name="price_max" value="{{.PriceMax}}" 
+                               placeholder="до" class="price-input" min="0">
+                    </div>
+                </div>
+
+                <!-- Категории -->
+                <div class="filter-group">
+                    <label>Категории</label>
+                    <div class="checkbox-group">
+                        {{range .Categories}}
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="category" value="{{.ID}}" 
+                                {{if $.SelectedCategories.Contains (printf "%d" .ID)}}checked{{end}}>
+                            {{.Name}}
+                        </label>
+                        {{end}}
+                    </div>
+                </div>
+
+                <!-- Производители -->
+                <div class="filter-group">
+                    <label>Производители</label>
+                    <div class="checkbox-group">
+                        {{range .Producers}}
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="producer" value="{{.ID}}"
+                                {{if $.SelectedBrands.Contains (printf "%d" .ID)}}checked{{end}}>
+                            {{.Name}}
+                        </label>
+                        {{end}}
+                    </div>
+                </div>
+
+                <!-- Сортировка -->
+                <div class="filter-group">
+                    <label for="sortBy">Сортировка</label>
+                    <select id="sortBy" name="sortBy" class="filter-select">
+                        <option value="">По умолчанию</option>
+                        <option value="ASC" {{if eq .SortBy "ASC"}}selected{{end}}>Цена по возрастанию</option>
+                        <option value="DESC" {{if eq .SortBy "DESC"}}selected{{end}}>Цена по убыванию</option>
+                    </select>
+                </div>
+
+                <!-- Кнопки -->
+                <div class="filter-actions">
+                    <button type="button" onclick="applyFilters()" class="btn btn-primary">
+                        Применить фильтры
+                    </button>
+                    <button type="button" onclick="clearFilters()" class="btn btn-secondary">
+                        Сбросить
+                    </button>
+                </div>
+
+                <!-- Инструкция по фильтрам -->
+                <div class="filter-group">
+                    <label>Как пользоваться:</label>
+                    <div style="font-size: 0.85rem; color: #546E7A; line-height: 1.4;">
+                        <p>• Вводите название в поиске</p>
+                        <p>• Выбирайте категории и бренды</p>
+                        <p>• Указывайте диапазон цен</p>
+                        <p>• Сортируйте по цене</p>
+                        <p>• Нажмите "Применить фильтры"</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Товары -->
+            <section class="products">
+                <div class="products-header">
+                    <h2>Товары</h2>
+                    <div class="products-count">
+                        Найдено: {{len .Products}} товаров
+                    </div>
+                </div>
+
+                <div class="products-grid">
+                    {{range .Products}}
+                    <div class="product-card">
+                        <div class="product-image">
+                            {{$imagePath := printf "/static/images/%s/%s" .CategoryName .Image}}
+                            <!-- Отладочная информация -->
+                            <div style="display: none; font-size: 10px; color: red;">
+                                Путь: {{$imagePath}}<br>
+                                Категория: {{.CategoryName}}<br>
+                                Название: {{.Name}}
+                            </div>
+                            <img src="{{$imagePath}}" alt="{{.Name}}" 
+                                onerror="console.log('Image failed to load:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="image-placeholder" style="display: none;">
+                                <span>{{.Name}}</span>
+                            </div>
+                        </div>
+
+                        <div class="product-info">
+                            <h3 class="product-name">{{.Name}}</h3>
+                            <div class="product-price">{{.Price}} BYN</div>
+                            <div class="product-stock">
+                                {{if gt .StockQuantity 0}}
+                                <span class="in-stock">В наличии: {{.StockQuantity}} шт.</span>
+                                {{else}}
+                                <span class="out-of-stock">Нет в наличии</span>
+                                {{end}}
+                            </div>
+                            <div class="product-meta">
+                                <span class="product-category">Категория: {{.CategoryName}}</span>
+                                <span class="product-brand">Бренд: {{.ProducerName}}</span>
+                            </div>
+
+                            <!-- ФОРМА ДЛЯ ДОБАВЛЕНИЯ В КОРЗИНУ -->
+                            <form action="/add-to-cart" method="POST" class="add-to-cart-form">
+                                <input type="hidden" name="product_id" value="{{.ProductID}}">
+                                
+                                <!-- БЛОК ВЫБОРА КОЛИЧЕСТВА -->
+                                <div class="quantity-selector">
+                                    <button type="button" class="qty-btn minus" data-product-id="{{.ProductID}}" data-change="-1"
+                                            {{if le .StockQuantity 0}}disabled{{end}}>-</button>
+                                    
+                                    <input type="number" name="quantity" id="qty-{{.ProductID}}" 
+                                        class="qty-input" value="1" min="1" max="{{.StockQuantity}}"
+                                        {{if le .StockQuantity 0}}disabled{{end}}>
+                                    
+                                    <button type="button" class="qty-btn plus" data-product-id="{{.ProductID}}" data-change="1"
+                                            {{if le .StockQuantity 0}}disabled{{end}}>+</button>
+                                </div>
+
+                                <button type="submit" class="btn btn-add-to-cart" 
+                                        {{if le .StockQuantity 0}}disabled{{end}}>
+                                    {{if gt .StockQuantity 0}}
+                                    В корзину
+                                    {{else}}
+                                    Нет в наличии
+                                    {{end}}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {{else}}
+                    <div class="no-products">
+                        <h3>Товары не найдены</h3>
+                        <p>Попробуйте изменить параметры фильтрации</p>
+                    </div>
+                    {{end}}
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+pkg/
+
+# Идеи IDE
+.vscode/
+.idea/
+
+# Логи
+*.log
+
+# Конфигурационные файлы с секретами
+.env
+.env.local
+.env.*.local
+
+# Бинарные файлы
+*.db
+*.sqlite
+*.sqlite3
+
+# Временные файлы
+tmp/
+temp/
+
+# OS generated
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# БД
+postgres_data/  

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/static/css/header.css">
+    <link rel="stylesheet" href="/static/css/cart.css">
+</head>
+<body>
+    <div class="page-container">
+        <!-- Шапка -->
+         <header class="header">
+    <div class="header-container">
+        <div class="header-inner">
+            <a href="/catalog" class="logo">
+                <img src="/static/images/logo.jpg" alt="GainWave" class="logo-img">
+                <span>GainWave</span>
+            </a>
+            <nav class="nav">
+                <a href="/catalog" class="nav-link">Каталог</a>
+                <a href="/cart" class="nav-link active">Корзина</a>
+                <a href="/profile" class="nav-link">Профиль</a>
+                <form action="/logout" method="POST" class="logout-form">
+                    <button type="submit" class="logout-btn">Выйти</button>
+                </form>
+            </nav>
+        </div>
+    </div>
+</header>
+
+        <!-- Основной контент -->
+        <main class="main">
+            <div class="container">
+                <div class="cart-page">
+                    <h1 class="page-title">Корзина</h1>
+                    
+                    {{if .UserCart}}
+                    <div class="cart-layout">
+                        <!-- Левая колонка - товары -->
+                        <div class="cart-items-section">
+                            <div class="section-header">
+                                <h2>Товары в корзине</h2>
+                                <span>{{.TotalItems}} товара</span>
+                            </div>
+                            
+                            <div class="cart-items-list">
+                                {{range .UserCart}}
+                                <div class="cart-item">
+                                    <div class="item-image">
+                                        {{$imagePath := printf "/static/images/%s/%s" .CategoryName .ImageURL}}
+                                        <img src="{{$imagePath}}" alt="{{.ProductName}}">
+                                    </div>
+                                    
+                                    <div class="item-details">
+                                        <h3 class="product-name">{{.ProductName}}</h3>
+                                        <p class="product-category">{{.CategoryName}}</p>
+                                        <p class="product-brand">{{.ProducerName}}</p>
+                                        <div class="product-price">{{.Price}} BYN/шт</div>
+                                    </div>
+                                    
+                                    <div class="item-controls">
+                                        <div class="quantity-display">
+                                            <span class="quantity-label">Количество:</span>
+                                            <span class="quantity-value">{{.Quantity}} шт.</span>
+                                        </div>
+                                        
+                                        <div class="item-total">
+                                            {{.TotalPrice}} BYN
+                                        </div>
+                                         <!-- Кнопка удаления -->
+                                        <form action="/delete-from-cart" method="POST" class="remove-form">
+                                            <input type="hidden" name="product_id" value="{{.ProductID}}">
+                                            <button type="submit" class="btn-remove">
+                                                🗑️ Удалить
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                                {{end}}
+                            </div>
+                        </div>
+
+                        <!-- Правая колонка - итоги -->
+                        <div class="order-summary">
+                            <div class="summary-card">
+                                <h3>Ваш заказ</h3>
+                                
+                                <div class="summary-line">
+                                    <span>Товары ({{.TotalItems}} шт.)</span>
+                                    <span>{{.Subtotal}} BYN</span>
+                                </div>
+                                
+                                <div class="summary-total">
+                                    <span>Итого к оплате</span>
+                                    <span class="total-price">{{.Subtotal}} BYN</span>
+                                </div>
+                                
+                                <form action="/process-payment" method="POST" class="payment-form">
+                                    <button type="submit" class="continue-btn">Оплатить</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {{else}}
+                    <!-- Пустая корзина -->
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">🛒</div>
+                        <h2>Ваша корзина пуста</h2>
+                        <p>Добавьте товары из каталога</p>
+                        <a href="/catalog" class="btn-primary">Перейти в каталог</a>
+                    </div>
+                    {{end}}
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

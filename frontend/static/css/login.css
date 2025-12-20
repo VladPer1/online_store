@@ -1,0 +1,195 @@
+/* ---------- RESET ---------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ---------- CONTAINER ---------- */
+.auth-container {
+    background: white;
+    padding: 28px 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 123, 255, 0.1);
+    width: 100%;
+    max-width: 460px;
+    border: 1px solid #e3f2fd;
+}
+
+/* ---------- LOGO ---------- */
+.logo {
+    text-align: center;
+}
+
+.logo h1 {
+    color: #007bff;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.slogan {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #2c3e50;
+    font-weight: 500;
+    font-style: italic;
+}
+/* ---------- TABS ---------- */
+.auth-tabs {
+    display: flex;
+    margin-bottom: 30px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: transparent;
+    color: #6c757d;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+    background: #007bff;
+    color: white;
+}
+
+/* ---------- FORMS ---------- */
+.auth-form {
+    display: none;
+}
+
+.auth-form.active {
+    display: block;
+}
+
+/* ---------- INPUTS ---------- */
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 16px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #007bff;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.input-group label {
+    position: absolute;
+    left: 16px;
+    top: 14px;
+    color: #6c757d;
+    font-size: 16px;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+    top: -8px;
+    left: 12px;
+    font-size: 12px;
+    background: white;
+    padding: 0 8px;
+    color: #007bff;
+}
+
+/* ---------- LINK ---------- */
+.forgot-password {
+    text-align: right;
+    margin-bottom: 25px;
+}
+
+.forgot-link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.forgot-link:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* ---------- BUTTON ---------- */
+.auth-btn {
+    width: 100%;
+    padding: 14px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.auth-btn:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+}
+
+.auth-btn:active {
+    transform: translateY(0);
+}
+
+
+
+/* ---------- MESSAGES ---------- */
+.message {
+    padding: 12px 20px;
+    border-radius: 6px;
+    color: white;
+    font-weight: 500;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.message.success {
+    background: #28a745;
+}
+
+.message.error {
+    background: #dc3545;
+}
+
+/* ---------- ACTIVE FORM ---------- */
+.auth-form {
+    display: none;
+}
+
+.auth-form.active {
+    display: block;
+}

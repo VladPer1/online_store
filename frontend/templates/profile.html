@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль пользователя - GainWave</title>
+    <link rel="stylesheet" href="/static/css/header.css">
+    <link rel="stylesheet" href="/static/css/profile.css">
+</head>
+<body>
+    <div class="page-container">
+        <!-- Шапка -->
+       <header class="header">
+    <div class="header-container">
+        <div class="header-inner">
+            <a href="/catalog" class="logo">
+                <img src="/static/images/logo.jpg" alt="GainWave" class="logo-img">
+                <span>GainWave</span>
+            </a>
+            <nav class="nav">
+                <a href="/catalog" class="nav-link">Каталог</a>
+                <a href="/cart" class="nav-link">Корзина</a>
+                <a href="/profile" class="nav-link active">Профиль</a>
+                <form action="/logout" method="POST" class="logout-form">
+                    <button type="submit" class="logout-btn">Выйти</button>
+                </form>
+            </nav>
+        </div>
+    </div>
+</header>
+
+        <!-- Основной контент -->
+        <main class="main">
+            <div class="container">
+                <div class="profile-page">
+                    <h1 class="page-title">Профиль пользователя</h1>
+                    
+                    <div class="profile-layout">
+                        <!-- Левая колонка - информация пользователя -->
+                        <div class="profile-info-section">
+                            <div class="profile-card">
+                                <div class="profile-header">
+                                    <div class="avatar">
+                                        <div class="avatar-placeholder">
+                                            👤
+                                        </div>
+                                    </div>
+                                    <div class="user-info">
+                                        <h2 class="user-name">Имя: {{.UserName}}</h2>
+                                        <p class="user-email">Почта: {{.UserEmail}}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="profile-actions">
+                                    
+                                    <a href="/update-profile-page" class="btn-profile-action">
+                                        Изменить имя/email
+                                    </a>
+                                    <a href="/change-password-page" class="btn-profile-action">
+                                        Изменить пароль
+                                    </a>
+                                    <a href="/delete-account-page" class="btn-profile-action btn-danger">
+                                        Удалить аккаунт
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Правая колонка - история заказов -->
+                        <div class="orders-section">
+                            <div class="orders-card">
+                                <div class="section-header">
+                                    <h3>История заказов</h3>
+                                </div>
+                                
+                                {{if .RecentOrders}}
+                                <div class="orders-list">
+                                    {{range .RecentOrders}}
+                                    <div class="order-item">
+                                        <div class="order-product">
+                                            <span class="product-name">Заказ #{{.OrderID}} - {{.ProductName}}</span>
+                                            <span class="product-quantity">Количество: {{.Quantity}} шт.</span>
+                                            <span class="product-total">Сумма: {{.TotalAmount}} BYN</span>
+                                        </div>
+                                    </div>
+                                    {{end}}
+                                </div>
+                                {{else}}
+                                <div class="no-orders">
+                                    <div class="no-orders-icon">📦</div>
+                                    <h4>Заказов пока нет</h4>
+                                    <p>Сделайте свой первый заказ в нашем каталоге</p>
+                                    <a href="/catalog" class="btn-primary">Перейти в каталог</a>
+                                </div>
+                                {{end}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/static/css/header.css">
+    <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+    <div class="page-container">
+        <!-- Шапка -->
+        <header class="header">
+             <div class="header-container">
+                <div class="header-inner">
+                    <a href="/admin" class="logo">
+                        <img src="/static/images/logo.jpg" alt="GainWave" class="logo-img">
+                        <span>GainWave</span>
+                    </a>
+                    <nav class="nav">  
+                        <div class="header-actions">
+                            <!-- Кнопка экспорта CSV -->
+                            <a href="/admin/export-csv" class="header-btn backup-btn" title="Экспорт БД в CSV">
+                                📥 Экспорт CSV
+                            </a>
+                            
+                            <!-- Форма импорта CSV -->
+                            <form action="/admin/import-csv" method="POST" enctype="multipart/form-data" class="import-form">
+                                <input type="file" name="csv_file" accept=".csv" id="csvFile" style="display: none;" onchange="this.form.submit()">
+                                <button type="button" class="header-btn import-btn" onclick="document.getElementById('csvFile').click()" title="Импорт БД из CSV">
+                                    📤 Импорт CSV
+                                </button>
+                            </form>
+                             
+                        <a href="/admin/report" class="report-header-btn" target="_blank">
+                            📊 Скачать отчет Excel
+                        </a>                     
+                        <form action="/logout" method="POST" class="logout-form"> 
+                            <button type="submit" class="logout-btn">Выйти</button>
+                        </form>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="main">
+            <div class="container">
+                <div class="admin-page">
+                    <h1 class="page-title">Админ-панель</h1>
+                    
+                    <!-- Сообщения -->
+                    {{if .Message}}
+                    <div class="admin-message {{if .Success}}success{{else}}error{{end}}">
+                        {{.Message}}
+                    </div>
+                    {{end}}
+
+                    <!-- Навигация по разделам -->
+                    <div class="admin-tabs">
+                        <a href="/admin?section=products" class="tab-btn {{if eq .CurrentSection "products"}}active{{end}}">Товары</a>
+                        <a href="/admin?section=ban" class="tab-btn {{if eq .CurrentSection "ban"}}active{{end}}">Бан пользователей</a>
+                        
+                    </div>
+
+                    <!-- Раздел управления товарами -->
+                    {{if eq .CurrentSection "products"}}
+                    <div class="admin-section">
+                        <div class="section-header">
+                            <h2>Управление товарами</h2>
+                            <a href="/admin?section=products&action=add" class="btn btn-primary">+ Добавить товар</a>
+                        </div>
+
+                        <!-- Форма добавления/редактирования товара -->
+                        {{if or (eq .Action "add") (eq .Action "edit")}}
+                        <div class="admin-form-section">
+                            <h3>{{if eq .Action "add"}}Добавление товара{{else}}Редактирование товара{{end}}</h3>
+                            <form method="POST" action="/admin/products/save" class="admin-form">
+                                <input type="hidden" name="product_id" value="{{.Product.ProductID}}">
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="name">Название товара *</label>
+                                        <input type="text" id="name" name="name" value="{{.Product.Name}}" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="description">Описание</label>
+                                        <textarea id="description" name="description" rows="3">{{.Product.Description}}</textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="price">Цена (BYN) *</label>
+                                        <input type="number" id="price" name="price" step="0.01" value="{{.Product.Price}}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="stock_quantity">Количество *</label>
+                                        <input type="number" id="stock_quantity" name="stock_quantity" value="{{.Product.StockQuantity}}" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="category_id">Категория *</label>
+                                        <select id="category_id" name="category_id" required>
+                                            <option value="">Выберите категорию</option>
+                                            {{range .Categories}}
+                                            <option value="{{.ID}}" {{if eq .ID $.Product.CategoryID}}selected{{end}}>{{.Name}}</option>
+                                            {{end}}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="producer_id">Производитель *</label>
+                                        <select id="producer_id" name="producer_id" required>
+                                            <option value="">Выберите производителя</option>
+                                            {{range .Producers}}
+                                            <option value="{{.ID}}" {{if eq .ID $.Product.ProducerID}}selected{{end}}>{{.Name}}</option>
+                                            {{end}}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="image_url">URL изображения</label>
+                                        <input type="text" id="image_url" name="image_url" value="{{.Product.ImageURL}}">
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <a href="/admin?section=products" class="btn btn-secondary">Отмена</a>
+                                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                                </div>
+                            </form>
+                        </div>
+                        {{end}}
+
+                        <!-- Список товаров -->
+                        {{if not .Action}}
+                        <div class="admin-table-section">
+                            <div class="table-container">
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Изображение</th>
+                                            <th>Название</th>
+                                            <th>Цена</th>
+                                            <th>Количество</th>
+                                            <th>Категория</th>
+                                            <th>Производитель</th>
+                                            <th>Действия</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{range .Products}}
+                                        <tr>
+                                            <td>{{.ProductID}}</td>
+                                            <td>
+                                                {{if .ImageURL}}
+                                                <img src="/static/images/{{.CategoryName}}/{{.ImageURL}}" alt="{{.Name}}" class="product-thumb">
+                                                {{else}}
+                                                <span class="no-image">Нет фото</span>
+                                                {{end}}
+                                            </td>
+                                            <td>{{.Name}}</td>
+                                            <td>{{.Price}} BYN</td>
+                                            <td>{{.StockQuantity}}</td>
+                                            <td>{{.CategoryName}}</td>
+                                            <td>{{.ProducerName}}</td>
+                                            <td class="actions">
+                                                <a href="/admin?section=products&action=edit&id={{.ProductID}}" class="btn-edit">✏️</a>
+                                                <form action="/admin/products/delete" method="POST" class="inline-form">
+                                                    <input type="hidden" name="product_id" value="{{.ProductID}}">
+                                                    <button type="submit" class="btn-delete" onclick="return confirm('Удалить товар?')">🗑️</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        {{else}}
+                                        <tr>
+                                            <td colspan="8" class="no-data">Товары не найдены</td>
+                                        </tr>
+                                        {{end}}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {{end}}
+                    </div>
+                    {{end}}
+
+                    <!-- Раздел бана пользователей -->
+                    {{if eq .CurrentSection "ban"}}
+                    <div class="admin-section">
+                        <div class="section-header">
+                            <h2>Бан пользователей</h2>
+                        </div>
+
+                        <div class="admin-form-section">
+                            <h3>Бан по ID пользователя</h3>
+                            <form method="POST" action="/admin/users/ban" class="admin-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="user_id">ID пользователя *</label>
+                                        <input type="number" id="user_id" name="user_id" required placeholder="Введите ID пользователя">
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">Забанить</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="admin-form-section">
+                            <h3>Разбан по ID пользователя</h3>
+                            <form method="POST" action="/admin/users/unban" class="admin-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="user_id">ID пользователя *</label>
+                                        <input type="number" id="user_id" name="user_id" required placeholder="Введите ID пользователя">
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">Разбанить</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {{end}}
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

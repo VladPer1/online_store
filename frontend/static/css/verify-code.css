@@ -1,0 +1,216 @@
+/* ---------- RESET ---------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ---------- CONTAINER ---------- */
+.auth-container {
+    background: white;
+    padding: 32px 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 123, 255, 0.1);
+    width: 100%;
+    max-width: 440px;
+    border: 1px solid #e3f2fd;
+}
+
+/* ---------- LOGO ---------- */
+.logo {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+/* ---------- VERIFICATION HEADER ---------- */
+.verification-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.verification-header h2 {
+    color: #212529;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.verification-subtitle {
+    color: #6c757d;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+.verification-subtitle strong {
+    color: #007bff;
+    font-weight: 600;
+}
+
+/* ---------- FORM ---------- */
+.verification-form {
+    margin-bottom: 24px;
+}
+
+/* ---------- INPUTS ---------- */
+.input-group {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 16px 18px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 18px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+    text-align: center;
+    letter-spacing: 8px;
+    font-weight: 600;
+    color: #212529;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #007bff;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.input-group input:invalid {
+    border-color: #dc3545;
+}
+
+.input-group input:valid {
+    border-color: #28a745;
+}
+
+.input-group label {
+    position: absolute;
+    left: 18px;
+    top: 16px;
+    color: #6c757d;
+    font-size: 16px;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    background: white;
+    padding: 0 6px;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+    top: -10px;
+    left: 14px;
+    font-size: 13px;
+    color: #007bff;
+    font-weight: 500;
+}
+
+/* ---------- HINT ---------- */
+.verification-hint {
+    text-align: center;
+    color: #6c757d;
+    font-size: 14px;
+    margin-bottom: 24px;
+    padding: 8px 0;
+}
+
+/* ---------- BUTTON ---------- */
+.auth-btn {
+    width: 100%;
+    padding: 16px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.auth-btn:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+}
+
+.auth-btn:active {
+    transform: translateY(0);
+}
+
+/* ---------- FOOTER ---------- */
+.verification-footer {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.verification-footer p {
+    color: #6c757d;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.footer-link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+.divider {
+    color: #6c757d;
+    margin: 0 12px;
+}
+
+/* ---------- MESSAGES ---------- */
+.message {
+    padding: 14px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 15px;
+}
+
+.message.success {
+    background: #28a745;
+}
+
+.message.error {
+    background: #dc3545;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 480px) {
+    .auth-container {
+        padding: 24px 20px;
+        margin: 20px;
+    }
+    
+    .verification-header h2 {
+        font-size: 22px;
+    }
+    
+    .input-group input {
+        font-size: 16px;
+        padding: 14px 16px;
+    }
+}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход - GainWave</title>
+    <link rel="stylesheet" href="/static/css/login.css">
+    <script src="/static/js/auth.js" defer></script>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="logo">
+            <img src="/static/images/logo.jpg" alt="GainWave" width="200">
+        </div>
+
+        <div class="slogan">
+                Лови волну роста с профессиональными спортивными добавками!
+        </div>
+
+        <!-- Сообщения об ошибках/успехе -->
+        {{if .Message}}
+        <div class="message {{if .Success}}success{{else}}error{{end}}">
+            {{.Message}}
+        </div>
+        {{end}}
+
+        <div class="auth-tabs">
+            <button type="button" class="tab-btn {{if eq .FormType "login"}}active{{end}}" onclick="switchTab('login')">Вход</button>
+            <button type="button" class="tab-btn {{if eq .FormType "register"}}active{{end}}" onclick="switchTab('register')">Регистрация</button>
+        </div>
+
+        <!-- Форма входа -->
+        <form id="loginForm" class="auth-form {{if eq .FormType "login"}}active{{end}}" method="POST" action="/login">
+            <div class="input-group">
+                <input type="email" id="loginEmail" name="email" placeholder=" " value="{{.Email}}" required>
+                <label for="loginEmail">Email</label>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="loginPassword" name="password" placeholder=" " required>
+                <label for="loginPassword">Пароль</label>
+            </div>
+
+            <div class="forgot-password">
+                <a href="/forgot-password" class="forgot-link">Забыли пароль?</a>
+            </div>
+
+            <button type="submit" class="auth-btn">Войти</button>
+        </form>
+
+        <!-- Форма регистрации -->
+        <form id="registerForm" class="auth-form {{if eq .FormType "register"}}active{{end}}" method="POST" action="/register">
+            <div class="input-group">
+                <input type="text" id="registerName" name="name" placeholder=" " value="{{.Name}}" required>
+                <label for="registerName">Имя</label>
+            </div>
+
+            <div class="input-group">
+                <input type="email" id="registerEmail" name="email" placeholder=" " value="{{.Email}}" required>
+                <label for="registerEmail">Email</label>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="registerPassword" name="password" placeholder=" " required>
+                <label for="registerPassword">Пароль</label>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="registerConfirmPassword" name="confirm_password" placeholder=" " required>
+                <label for="registerConfirmPassword">Повторите пароль</label>
+            </div>
+
+            <button type="submit" class="auth-btn">Зарегистрироваться</button>
+        </form>
+    </div>
+
+</body>
+</html>
