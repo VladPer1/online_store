@@ -1,6 +1,5 @@
 # Online Store
 
-
 ## ✨ Features
 
 ### 🛒 Full E-commerce System
