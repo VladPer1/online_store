@@ -39,20 +39,27 @@ func generateToken(userID int, email string, status string) (string, error) {
 	claims["exp"] = time.Now().Add(24 * time.Hour).Unix()
 	claims["iat"] = time.Now().Unix()
 
-	return token.SignedString(jwtSecret)
+	return token.SignedString([]byte(jwtSecret))
 }
 
 // validateToken проверяет JWT токен и возвращает данные пользователя
 
 func validateToken(tokenString string) (*models.User, error) {
 
-	jwtSecret := []byte("GainWave-Sports-Supplement-Store-2024-Secure-JWT-Key!")
+	jwtSecret := os.Getenv("JWT_SECRET")
+
+	// Если переменная окружения не установлена, используем дефолтный
+	if jwtSecret == "" {
+		jwtSecret = "temporary-dev-secret-change-in-production"
+		log.Println("ВНИМАНИЕ: Используется дефолтный JWT_SECRET!")
+	}
+
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Проверяем алгоритм подписи
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("неожиданный метод подписи: %v", token.Header["alg"])
 		}
-		return jwtSecret, nil
+		return []byte(jwtSecret), nil
 	})
 
 	if err != nil {
@@ -369,6 +376,7 @@ func verifyCodeHandler(db *pgxpool.Pool) http.HandlerFunc {
 			Email:    pendingUser.Email,
 			Password: pendingUser.Password,
 			Name:     pendingUser.Name,
+			Status:   "user",
 		}
 
 		err = database.CreateUser(db, ctx, &user)

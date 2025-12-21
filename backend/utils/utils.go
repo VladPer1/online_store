@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 
 	"online_store/models"
+
+	"github.com/joho/godotenv"
 )
 
 var AppConfig models.Config
@@ -24,6 +26,15 @@ func ClearCookie(w http.ResponseWriter, r *http.Request) {
 
 // InitConfig инициализирует конфигурацию
 func InitConfig() {
+	// Загружаем .env файл
+	err := godotenv.Load("../.env")
+
+	if err != nil {
+		log.Printf("Ошибка загрузки .env файла: %v", err)
+	} else {
+		log.Println(".env файл успешно загружен")
+	}
+
 	// Путь к шаблонам
 	AppConfig.TemplatePath = os.Getenv("TEMPLATE_PATH")
 	if AppConfig.TemplatePath == "" {
