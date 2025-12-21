@@ -23,7 +23,13 @@ import (
 // Функция генерации JWT токена
 func generateToken(userID int, email string, status string) (string, error) {
 
-	jwtSecret := []byte("GainWave-Sports-Supplement-Store-2024-Secure-JWT-Key!")
+	jwtSecret := os.Getenv("JWT_SECRET")
+
+	if jwtSecret == "" {
+		jwtSecret = "temporary-dev-secret-change-in-production"
+		log.Println("ВНИМАНИЕ: Используется дефолтный JWT_SECRET!")
+	}
+
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	claims := token.Claims.(jwt.MapClaims)
