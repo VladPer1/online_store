@@ -1,0 +1,77 @@
+services:
+  
+  database:
+    image: postgres:16-alpine
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_DB: ${DB_NAME:-Sports_supplement_store}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+     - postgres_data:/var/lib/postgresql/data
+     - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql # SQL для создания таблиц
+     - ./database/seed.sql:/docker-entrypoint-initdb.d/seed.sql # Тестовые данные
+      
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      database:
+        condition: service_healthy  # Ждем пока БД будет готова
+    env_file:
+      - .env  # Загружаем те же переменные
+    environment:
+      # Переменные для подключения к БД
+      DB_HOST: database # В Docker сети используем имя сервиса
+      DB_PORT: 5432     # Внутренний порт PostgreSQL
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME:-Sports_supplement_store}
+      
+      # JWT для аутентификации
+      JWT_SECRET: ${JWT_SECRET}
+      
+      # SMTP для отправки email
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      
+      # Пути к файлам (адаптированы для Docker)
+      TEMPLATE_PATH: /app/frontend/templates
+      STATIC_PATH: /app/frontend/static
+        
+    ports:
+      - "8080:8080"
+    volumes:
+      # Монтируем директории для разработки (горячая перезагрузка)
+      - ./backend:/app  # Исходный код Go
+      - ./frontend/templates:/app/frontend/templates  # HTML шаблоны
+      - ./frontend/static:/app/frontend/static        # Статические файлы
+      - ./.env:/app/.env                              # Файл конфигурации
+
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+
+volumes:
+  postgres_data:  # ← Определение volume для БД
+       
+      
