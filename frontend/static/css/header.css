@@ -110,9 +110,9 @@ body {
     box-shadow: 0 4px 8px rgba(244, 67, 54, 0.4);
 }
 
-/* Основное содержимое страницы */
+
 .main {
-    flex: 1 0 auto; /* Занимает оставшееся пространство */
+    flex: 1 0 auto; 
     padding: 2rem 0;
     width: 100%;
 }
@@ -123,6 +123,12 @@ body {
     margin: 0 auto;
     padding: 0 20px;
     width: 100%;
+}
+
+/* Без этого при переходе в корзину шапка дергается*/
+html {
+    overflow-y: scroll; 
+    scrollbar-gutter: stable; 
 }
 
 /* Адаптивность */
