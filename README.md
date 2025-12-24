@@ -72,7 +72,7 @@ docker-compose up --build
 
 #### Backend API: http://localhost:8080
 
-#### PostgreSQL Database: localhost:5432
+#### PostgreSQL Database: http://localhost:5432
 
 ### Method 2: Traditional Installation
 
@@ -217,7 +217,7 @@ STATIC_PATH=D:\online_store\frontend\static
 ```
 
 online-store/
-├── backend/                    # Go backend
+├── backend/                   # Go backend
 │   ├── handlers/              # HTTP handlers
 │   │── database/              # Database layer
 │   │── models/                # Data models
@@ -230,7 +230,7 @@ online-store/
 │   ├── Dockerfile             # Frontend container configuration
 │   ├── templates/             # HTML templates
 │   └── static/                # CSS/JS/images
-├── database/
+├── database/                  # Database
 ├   ├── seed.sql               # Database test data script
 │   └── init.sql               # Database initialization script
 │── .gitignore                 # Git ignore rules
@@ -408,13 +408,3 @@ The application exposes the following API endpoints:
 - `GET /admin/export-csv`: Export to CSV
 - `POST /admin/import-csv`: Import from CSV
 
-
-## Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Make your changes and commit them.
-4. Push your changes to your forked repository.
-5. Submit a pull request.
