@@ -28,13 +28,13 @@ services:
     restart: always
     depends_on:
       database:
-        condition: service_healthy  # Ждем пока БД будет готова
+        condition: service_healthy  
     env_file:
-      - .env  # Загружаем те же переменные
+      - .env 
     environment:
-      # Переменные для подключения к БД
-      DB_HOST: database # В Docker сети используем имя сервиса
-      DB_PORT: 5432     # Внутренний порт PostgreSQL
+      
+      DB_HOST: database 
+      DB_PORT: 5432     
       DB_USER: ${DB_USER:-postgres}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME:-Sports_supplement_store}
@@ -52,11 +52,11 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      # Монтируем директории для разработки (горячая перезагрузка)
-      - ./backend:/app  # Исходный код Go
-      - ./frontend/templates:/app/frontend/templates  # HTML шаблоны
-      - ./frontend/static:/app/frontend/static        # Статические файлы
-      - ./.env:/app/.env                              # Файл конфигурации
+      
+      - ./backend:/app  
+      - ./frontend/templates:/app/frontend/templates  
+      - ./frontend/static:/app/frontend/static        
+      - ./.env:/app/.env                              
 
 
   frontend:
@@ -72,6 +72,6 @@ services:
       - ./frontend:/usr/share/nginx/html
 
 volumes:
-  postgres_data:  # ← Определение volume для БД
+  postgres_data:  
        
       
