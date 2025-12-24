@@ -29,12 +29,52 @@
 - Excel report generation
 - Real-time stock monitoring
 
+### 🐳 Docker Support
+- Multi-container setup with Docker Compose
+- Optimized Dockerfiles for backend and frontend
+- Easy development and production deployment
+
 ## 🚀 Quick Start / Installation
 
-### Prerequisites
+### Prerequisites (Traditional Installation)
 - Go 1.20+
 - PostgreSQL 14+
 - Gmail Account
+
+### Prerequisites (Docker Installation)
+- Docker 20.10+
+- Docker Compose 2.0+
+
+### Method 1: Using Docker (Recommended) 🐳
+
+### 1. Clone Repository
+```bash
+git clone https://github.com/VladPer1/online-store.git
+cd online-store
+```
+
+### 2. Configure Environment
+
+```bash
+cp ../.env.example ../.env
+# Edit .env file with your settings
+```
+
+### 3. Build and Run with Docker Compose
+
+```bash
+docker-compose up --build
+```
+
+### 4. Access the Application
+
+#### Frontend: http://localhost:8080
+
+#### Backend API: http://localhost:8080
+
+#### PostgreSQL Database: localhost:5432
+
+### Method 2: Traditional Installation
 
 ### 1. Clone Repository
 ```bash
@@ -63,6 +103,88 @@ go run main.go
 ```
 Server starts at: http://localhost:8080
 
+## 🐳 Docker Configuration
+### Docker Compose Services
+
+``` bash
+services:
+  
+  database:
+    image: postgres:16-alpine
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_DB: ${DB_NAME:-Sports_supplement_store}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+     - postgres_data:/var/lib/postgresql/data
+     - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql # SQL для создания таблиц
+     - ./database/seed.sql:/docker-entrypoint-initdb.d/seed.sql # Тестовые данные
+      
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      database:
+        condition: service_healthy  
+    env_file:
+      - .env 
+    environment:
+      
+      DB_HOST: database 
+      DB_PORT: 5432     
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME:-Sports_supplement_store}
+      
+      # JWT для аутентификации
+      JWT_SECRET: ${JWT_SECRET}
+      
+      # SMTP для отправки email
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      
+      # Пути к файлам (адаптированы для Docker)
+      TEMPLATE_PATH: /app/frontend/templates
+      STATIC_PATH: /app/frontend/static
+        
+    ports:
+      - "8080:8080"
+    volumes:
+      
+      - ./backend:/app  
+      - ./frontend/templates:/app/frontend/templates  
+      - ./frontend/static:/app/frontend/static        
+      - ./.env:/app/.env                              
+
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+
+volumes:
+  postgres_data:  
+       
+      
+```
 ## Environment Variables
 
 Create `.env` file with:
@@ -97,30 +219,23 @@ STATIC_PATH=D:\online_store\frontend\static
 online-store/
 ├── backend/                    # Go backend
 │   ├── handlers/              # HTTP handlers
-│   │   ├── auth_handler.go    # Authentication
-│   │   ├── cart_handler.go    # Shopping cart
-│   │   ├── catalog_handler.go # Product catalog
-│   │   ├── payment_handler.go # Payments
-│   │   ├── profile_handler.go # User profiles
-│   │   ├── admin_handler.go   # Admin panel
-│   │   └── routes.go          # URL routing
-│   ├── database/              # Database layer
-│   │   ├── connection.go      # DB connection
-│   │   ├── user_repository.go # User operations
-│   │   ├── cart_repository.go # Cart operations
-│   │   ├── orders_repository.go # Orders
-│   │   ├── filters_repository.go # Filtering
-│   │   └── admin_repository.go # Admin functions
-│   ├── models/                # Data models
+│   │── database/              # Database layer
+│   │── models/                # Data models
 │   ├── utils/                 # Utilities
 │   ├── server/                # Server setup
+│   ├── go.mod                 # Go module
+│   ├── Dockerfile             # Backend container configuration    
 │   └── main.go                # Entry point
 ├── frontend/                  # Frontend files
+│   ├── Dockerfile             # Frontend container configuration
 │   ├── templates/             # HTML templates
 │   └── static/                # CSS/JS/images
-│
+├── database/
+├   ├── seed.sql               # Database test data script
+│   └── init.sql               # Database initialization script
+│── .gitignore                 # Git ignore rules
 ├── .env.example               # Config template
-├── go.mod                     # Go module
+├── docker-compose.yaml        # Multi-container orchestration
 └── README.md                  # Documentation
 
 ```
